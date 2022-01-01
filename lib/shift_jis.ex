@@ -1,18 +1,14 @@
 defmodule ShiftJis do
-  @moduledoc """
-  Documentation for `ShiftJis`.
+  # Check config/config.exs to see how to enable this
+  @shift_jis "VENDORS/MICSFT/WINDOWS/CP932"
+
+  @doc ~S"""
+      iex> test = ShiftJis.encode("テスト")
+      <<131, 101, 131, 88, 131, 103>>
+      iex> ShiftJis.decode(test)
+      "テスト"
   """
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> ShiftJis.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
+  def encode(str), do: Codepagex.from_string!(str, @shift_jis)
+  def decode(str), do: Codepagex.to_string!(str, @shift_jis)
 end

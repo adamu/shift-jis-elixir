@@ -1,21 +1,37 @@
-# ShiftJis
+# SHIFT_JIS in Elixir with Codepagex
 
-**TODO: Add description**
+A demonstration of how to encode/decode SHIFT_JIS in Elixir with the [Codepagex](https://hex.pm/packages/codepagex) library
 
-## Installation
+## Config
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `shift_jis` to your list of dependencies in `mix.exs`:
+`SHIFT_JIS` is called `VENDORS/MICSFT/WINDOWS/CP932` in Codepagex. Enable it in [config](https://github.com/adamu/shift-jis-elixir/blob/main/config/config.exs):
 
 ```elixir
-def deps do
-  [
-    {:shift_jis, "~> 0.1.0"}
-  ]
-end
+config :codepagex, :encodings, [
+  # CP392 is SHIFT_JIS
+  # https://en.wikipedia.org/wiki/Code_page_932_(Microsoft_Windows)
+  # Make sure to `mix deps.compile codepagex --force` after changing this
+  "VENDORS/MICSFT/WINDOWS/CP932"
+]
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/shift_jis>.
+## Encode/Decode
 
+After that we can [encode/decode](https://github.com/adamu/shift-jis-elixir/blob/main/lib/shift_jis.ex):
+
+```elixir
+defmodule ShiftJis do
+  # Check config/config.exs to see how to enable this
+  @shift_jis "VENDORS/MICSFT/WINDOWS/CP932"
+
+  @doc ~S"""
+      iex> test = ShiftJis.encode("テスト")
+      <<131, 101, 131, 88, 131, 103>>
+      iex> ShiftJis.decode(test)
+      "テスト"
+  """
+
+  def encode(str), do: Codepagex.from_string!(str, @shift_jis)
+  def decode(str), do: Codepagex.to_string!(str, @shift_jis)
+end
+```
